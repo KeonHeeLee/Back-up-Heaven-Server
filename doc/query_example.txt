@@ -1,0 +1,88 @@
+insert into data_code values ('성별', 0, '남자');
+insert into data_code values ('성별', 1, '여자');
+
+insert into data_code values ('직종', 2, '매장관리');
+insert into data_code values ('직종', 3, '서빙');
+insert into data_code values ('직종', 4, '주방');
+insert into data_code values ('직종', 5, '배달');
+insert into data_code values ('직종', 6, '사무보조');
+insert into data_code values ('직종', 7, '노무');
+
+insert into local values(1, '대한민국', 0);
+insert into local values(2, '서울', 1);
+insert into local values(3, ' 인천', 1);
+insert into local values(4, '대구', 1);
+insert into local values(5, '부산', 1);
+insert into local values(6, '광주', 1);
+insert into local values(7, '대전', 1);
+insert into local values(8, '경기도', 1);
+insert into local values(9, '강원도', 1);
+insert into local values(10, '충청북도', 1);
+insert into local values(11, '충청남도', 1);
+insert into local values(12, '전라남도', 1);
+insert into local values(13, '전라북도', 1);
+insert into local values(14, '경상남도', 1);
+insert into local values(15, '경상북도', 1);
+insert into local values(16, '제주도', 1);
+
+insert into local values(17, '강남구', 2);
+insert into local values(18, '강동구', 2);
+insert into local values(19, '강북구', 2);
+insert into local values(20, '강서구', 2);
+insert into local values(21, '관악구', 2);
+insert into local values(22, '광진구', 2);
+insert into local values(23, '금천구', 2);
+insert into local values(24, '구로구', 2);
+insert into local values(25, '노원구', 2);
+insert into local values(26, '도봉구', 2);
+insert into local values(27, '동대문구', 2);
+insert into local values(28, '동작구', 2);
+insert into local values(29, '마포구', 2);
+insert into local values(30, '서대문구', 2);
+insert into local values(31, '서초구', 2);
+insert into local values(32, '성동구', 2);
+insert into local values(33, '성북구', 2);
+insert into local values(34, '양천구', 2);
+insert into local values(35, '영등포구', 2);
+insert into local values(36, '용산구', 2);
+insert into local values(37, '은평구', 2);
+insert into local values(38, '종로구', 2);
+insert into local values(39, '중구', 2);
+insert into local values(40, '중량구', 2);
+
+insert into local values(41, '포항시', 15);
+insert into local values(42, '포항시 남구', 15);
+insert into local values(43, '포항시 북구', 15);
+insert into local values(44, '경주시', 15);
+insert into local values(45, '김천시', 15);
+insert into local values(46, '안동시', 15);
+insert into local values(47, '구미시', 15);
+insert into local values(48, '영주시', 15);
+insert into local values(49, '영천시', 15);
+insert into local values(50, '상주시', 15);
+insert into local values(51, '문경시', 15);
+insert into local values(52, '경산시', 15);
+insert into local values(53, '군위군', 15);
+insert into local values(54, '의성군', 15);
+insert into local values(55, '청송군', 15);
+insert into local values(56, '영양군', 15);
+insert into local values(57, '영덕군', 15);
+insert into local values(58, '청도군', 15);
+insert into local values(59, '고령군', 15);
+insert into local values(60, '성주군', 15);
+insert into local values(61, '칠곡군', 15);
+insert into local values(62, '예천군', 15);
+insert into local values(63, '봉화군', 15);
+insert into local values(64, '울진군', 15);
+insert into local values(65, '울릉군', 15);
+
+
+insert into board values(null, "Test board01", "Test store01", "2018.05.20 21:00", "2018.05.20 23:59", 8000, "Tester", 2, "Not coder", "Daeta Heaven", 30, "Tester house", "user");
+insert into board values(null, "Test board02", "Test store02", "2018.05.20 21:00", "2018.05.20 23:59", 8100, "Tester", 3, "Not coder", "Daeta Heaven", 31, "Tester house", "user");
+insert into board values(null, "Test board03", "Test store03", "2018.05.20 21:00", "2018.05.20 23:59", 8200, "Tester", 4, "Not coder", "Daeta Heaven", 32, "Tester house", "user");
+insert into board values(null, "Test board04", "Test store04", "2018.05.20 21:00", "2018.05.20 23:59", 8300, "Tester", 5, "Not coder", "Daeta Heaven", 33, "Tester house", "user");
+insert into board values(null, "Test board05", "Test store05", "2018.05.20 21:00", "2018.05.20 23:59", 8400, "Tester", 6, "Not coder", "Daeta Heaven", 34, "Tester house", "user");
+insert into board values(null, "Test board06", "Test store06", "2018.05.20 21:00", "2018.05.20 23:59", 8500, "Tester", 7, "Not coder", "Daeta Heaven", 35, "Tester house", "user");
+
+select local_id from local where local_name = "서울";
+select no, title, storename, start_time, end_time, urgency from board where order by no desc;
