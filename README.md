@@ -24,7 +24,7 @@ $ pip install pymsql
 only clone our git-repository.
 
 ```
-$ git clone https://github.com/KeonHeeLee/Back-up-Heaven
+$ git clone https://github.com/KeonHeeLee/Back-up-Heaven-Server
 ```
 
 ## How to use
