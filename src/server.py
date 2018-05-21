@@ -156,7 +156,7 @@ def sign_up():
     else:
         return jsonify(response), 406
 
-@app.route(rule="/support", methods=["POSt"])
+@app.route(rule="/support", methods=["POST"])
 def support():
     '''
 
@@ -185,7 +185,11 @@ def get_supports():
     args = {
         "no": no,
         "id": id }
-    return "HTTP/1.1 200 OK", 200
+    try:
+        response = handler.get_request(util.GET_SUPPORTERS, request_data=None, args=args)
+        return jsonify(response), 200
+    except:
+        return jsonify(exception.SEND_ERROR)
 
 @app.route(rule="/locallist", methods=["GET"])
 def get_local_list():
@@ -220,4 +224,4 @@ def get_job_list():
         return jsonify(exception.SEND_ERROR), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=80)
