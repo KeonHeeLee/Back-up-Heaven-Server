@@ -29,14 +29,15 @@ class sign:
             job = util.get_job_id(cursor=cursor, job_name=job_name)
 
             query = "insert into member values(%s, %s, %s, %d, %s, %s, %d, %s, %d)"
-            cursor.execute(query, [id, pwd, name, gender, birthday, phone, local, local_sub, job])
+            cursor.execute(query, (id, pwd, name, gender, birthday, phone, local, local_sub, job))
             conn.commit()
 
         util.close_db(conn=conn)
+        return {"message": "Regist OK"}
 
     def check_user_duplication(self, cursor, name, birthday, phone):
         check_user = "select * from member where name=%s and birthday=%s and phone=%s;"
-        cursor.execute(check_user, [name, birthday, phone])
+        cursor.execute(check_user, (name, birthday, phone))
         rows = cursor.fetchall()
 
         if rows == None:
@@ -53,3 +54,42 @@ class sign:
             return False
         else:
             return True
+
+    def login(self, request):
+        id  = request["id"]
+        pwd = request["pwd"]
+        isLoginSuccess = True
+
+        conn = util.open_db()
+        with conn.cursor() as cursor:
+            query = "select * from member where id = %s and pwd = %s;"
+            cursor.execute(query, (id, pwd))
+            rows = cursor.fetchall()
+
+            if rows == None:
+                isLoginSuccess = False
+
+        util.close_db(conn=conn)
+        response = {"authonization": isLoginSuccess}
+        return response
+
+    def logout(self, request):
+        isLoginSuccess = True
+        id = request["id"]
+
+        if id == None:
+            isLoginSuccess = False
+        else:
+            conn = util.open_db()
+            with conn.cursor() as cursor:
+                query = "select * from member where id = %s;"
+                cursor.execute(query, id)
+                rows = cursor.fetchall()
+
+                if rows == None:
+                    isLoginSuccess = False
+
+            util.close_db(conn=conn)
+
+        response = {"authonization": isLoginSuccess}
+        return response

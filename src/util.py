@@ -8,6 +8,7 @@ SIGNUP          = "SIGHUP"
 REGIST_BOARD    = "REGIST_BOARD"
 DETAIL_BOARD    = "DETAIL_BOARD"
 SURPPORT        = "SURPPORT"
+GET_SUPPORTERS  = "GET_SUPPORTERS"
 LOCAL_LIST      = "LOCAL_LIST"
 JOB_LIST        = "JOB_LIST"
 ERROR           = "ERROR"
@@ -40,6 +41,17 @@ def get_gender_code(cursor, gender_name):
         gender_code = i[0]
 
     return gender_code
+
+def get_gender_name(cursor, gender_code):
+    gender_name = None
+    gender_name_check = "select name from data_code where type=%s and id=%d;"
+    cursor.execute(gender_name_check, ['성별', gender_code])
+    x = cursor.fetchall()
+
+    for i in x:
+        gender_name = i[0]
+
+    return gender_name
 
 def get_local_id(cursor, local_name):
     local_id = None
