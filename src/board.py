@@ -20,7 +20,7 @@ class board:
 
         with conn.cursor() as cursor:
             simple_board_list = {}
-            query = "select no, title, storename, start_time, end_time, urgency from board "
+            query = "select storename, local, local_sub, start_time, end_time, urgency, no from board "
             filter = self.adjust_filter(cursor=cursor, local_name=local_name, job_name=job_name)
 
             if filter != None:
@@ -31,7 +31,7 @@ class board:
             cursor.execute(query)
             rows = cursor.fetchall()
 
-            simple_board_list = self.set_json(rows, simple_board_list)
+            simple_board_list = self.set_json(cursor, rows, simple_board_list)
 
         util.close_db(conn=conn)
         return simple_board_list
@@ -48,19 +48,20 @@ class board:
 
         return local_name, job_name
 
-    def set_json(self, rows, simple_board_list):
+    def set_json(self, cursor, rows, simple_board_list):
+        _simple_board_list = []
         for row in rows:
-            board_row = str(row[0])
-            simple_board_list.update(
-                {
-                    board_row: {
-                        "title": row[1],
-                        "storename": row[2],
-                        "start_time": row[3],
-                        "end_time": row[4],
-                        "urgency": row[5]
-                    }
-                })
+            upper_id = util.get_upper_local(cursor, row[1])
+            _simple_board_list.append({
+                "storename": row[0],
+                "address": util.get_local_name(cursor, upper_id) + " "+ util.get_local_name(cursor, row[1]) + " "+ row[2],
+                "start_time": row[3],
+                "end_time": row[4],
+                "urgency": str(row[5]),
+                "no": row[6]
+            })
+
+        simple_board_list.update({"boards" : _simple_board_list })
         return simple_board_list
 
     def adjust_filter(self, cursor, local_name, job_name):
@@ -83,12 +84,13 @@ class board:
             cursor.execute(query)
             lower_rows = cursor.fetchall()
 
+            adder = adder + "("
             if lower_rows == None:
-                adder = adder + "local = " + str(local_id)
+                adder = adder + "local = " + str(local_id) + ")"
             else:
                 for lower_row in lower_rows:
                     adder = adder + "local = " + str(lower_row[0]) + " or "
-                adder = adder[:-4]
+                adder = adder + "local=%d)" %(local_id)
 
         if job_name != None:
             if local_name != None:
@@ -101,7 +103,7 @@ class board:
             for row in rows:
                 job = row[0]
 
-            adder = adder + "job =" + str(job)
+            adder = adder + "(job =" + str(job) +")"
 
         return adder
 
@@ -123,13 +125,7 @@ class board:
                 for i in x :
                     job = i[0]
 
-                local = None
-                local_query = "select local_name from local where local_id=%d" %(row[10])
-                cursor.execute(local_query)
-                x = cursor.fetchall()
-                for i in x :
-                    local = i[0]
-
+                upper_id = util.get_upper_local(cursor, row[10])
                 response.update({
                     "no": row[0],
                     "title": row[1],
@@ -141,9 +137,9 @@ class board:
                     "job": job,
                     "favorable_condition": row[8],
                     "detail": row[9],
-                    "local": local,
-                    "local_sub": row[11],
-                    "id": row[12]
+                    "address": util.get_local_name(cursor, upper_id) + " "+ util.get_local_name(cursor, row[10]) + " "+ row[11],
+                    "id": row[12],
+                    "phone": row[13]
                 })
 
         util.close_db(conn=conn)

@@ -8,6 +8,7 @@ SIGNUP          = "SIGHUP"
 REGIST_BOARD    = "REGIST_BOARD"
 DETAIL_BOARD    = "DETAIL_BOARD"
 SURPPORT        = "SURPPORT"
+GET_SUPPORTERS  = "GET_SUPPORTERS"
 LOCAL_LIST      = "LOCAL_LIST"
 JOB_LIST        = "JOB_LIST"
 ERROR           = "ERROR"
@@ -41,6 +42,17 @@ def get_gender_code(cursor, gender_name):
 
     return gender_code
 
+def get_gender_name(cursor, gender_code):
+    gender_name = None
+    gender_name_check = "select name from data_code where type=%s and id=%d;"
+    cursor.execute(gender_name_check, ['성별', gender_code])
+    x = cursor.fetchall()
+
+    for i in x:
+        gender_name = i[0]
+
+    return gender_name
+
 def get_local_id(cursor, local_name):
     local_id = None
 
@@ -52,6 +64,23 @@ def get_local_id(cursor, local_name):
         local_id = i[0]
 
     return local_id
+
+def get_upper_local(cursor, local_id):
+    local_id_query = "select local_upper from local where local_id=%d;" %(local_id)
+    cursor.execute(local_id_query)
+    x = cursor.fetchall()
+
+    local_upper = x[0][0]
+    return local_upper
+
+def get_local_name(cursor, local_id):
+    local_id_query = "select local_name from local where local_id=%d;" %(local_id)
+    cursor.execute(local_id_query)
+    x = cursor.fetchall()
+
+    local_name = x[0][0]
+
+    return local_name
 
 
 def get_job_id(cursor, job_name):
@@ -65,3 +94,6 @@ def get_job_id(cursor, job_name):
         job_id = i[0]
 
     return job_id
+
+def get_phone_num(cursor, id):
+    query = "select phone from "

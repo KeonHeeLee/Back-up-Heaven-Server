@@ -16,11 +16,9 @@ def get_home():
     "1" : {
             "title": title,
             "storename" : storename,
-            "date": date,
             "start_time": start_time,
             "end_time": end_time,
             "urgency" : urgency,
-            "image": image_path
         },
     "2" : {
 
@@ -101,17 +99,42 @@ def regitst_board():
     except:
         return jsonify(exception.SEND_ERROR), 500
 
-@app.route(rule="/board_down?no=<board_no>", methods=["DELETE"])
-def unregist_board():
-    return "HTTP/1.1 200 OK", 200
+#@app.route(rule="/board_down?no=<board_no>", methods=["DELETE"])
+#def unregist_board():
+#    return "HTTP/1.1 200 OK", 200
 
 @app.route(rule="/login", methods=["POST"])
 def login():
-    return "HTTP/1.1 200 OK", 200
+    '''
+
+    :return:
+    '''
+    req = request.get_json()
+
+    if req == None:
+        return jsonify(exception.BAD_REQUEST), 400
+
+    try:
+        response = handler.get_request(util.LOGIN, request_data=req, args=None)
+        return jsonify(response), 200
+    except:
+        return jsonify(exception.SEND_ERROR), 500
 
 @app.route(rule="/logout", methods=["POST"])
 def logout():
-    return "HTTP/1.1 200 OK", 200
+    '''
+
+    :return:
+    '''
+    req = request.get_json()
+
+    if req == None:
+        return jsonify(exception.BAD_REQUEST), 400
+    try:
+        response = handler.get_request(util.LOGOUT, request_data=req, args=None)
+        return jsonify(response), 200
+    except:
+        return jsonify(exception.SEND_ERROR)
 
 @app.route(rule="/signup", methods=["POST"])
 def sign_up():
@@ -122,22 +145,49 @@ def sign_up():
     req = request.get_json()
     response = handler.get_request(util.SIGNUP, request_data=req, args=None)
 
-    if response == None:
+    if response != None:
         try:
-            return "HTTP/1.1 200 OK", 200
+            return jsonify(response), 200
         except:
             return jsonify(exception.SEND_ERROR), 500
 
     else:
         return jsonify(response), 406
 
-@app.route(rule="/support?no=<board_no>", methods=["POSt"])
+@app.route(rule="/support", methods=["POST"])
 def support():
-    return "HTTP/1.1 200 OK", 200
+    '''
 
-@app.route(rule="/supporters?id=<id>&no=<board_no>", methods=["GET"])
-def get_supports(id, board_no):
-    return "HTTP/1.1 200 OK", 200
+    :return:
+    '''
+    req = request.get_json()
+    try:
+        response = handler.get_request(util.SURPPORT, request_data=req, args=None)
+        return jsonify(response), 200
+    except:
+        return jsonify(exception.SEND_ERROR), 500
+
+
+@app.route(rule="/supporters", methods=["GET"])
+def get_supports():
+    '''
+
+    :return:
+    '''
+    no = None
+    id = None
+
+    no = request.args.get("no", no)
+    id = request.args.get("od", id)
+
+    args = {
+        "no": no,
+        "id": id }
+    try:
+        response = handler.get_request(util.GET_SUPPORTERS, request_data=None, args=args)
+        return jsonify(response), 200
+    except:
+        return jsonify(exception.SEND_ERROR)
 
 @app.route(rule="/locallist", methods=["GET"])
 def get_local_list():
@@ -172,4 +222,4 @@ def get_job_list():
         return jsonify(exception.SEND_ERROR), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=80, debug=True)
