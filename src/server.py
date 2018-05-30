@@ -84,20 +84,17 @@ def regitst_board():
     server will send status_code to you.
     :return: status_code
     '''
-    req = request.get_json()
-
-    if req == None:
-        return jsonify(exception.BAD_REQUEST), 400
 
     try:
+        req = request.get_json()
         try:
             handler.get_request(type=util.REGIST_BOARD, request_data=req, args=None)
         except:
-            return exception.FAIL_REGIST_BOARD, 500
+            return "HTTP/1.1 500 Internal Server Error", 500
 
         return "HTTP/1.1 200 OK", 200
     except:
-        return jsonify(exception.SEND_ERROR), 500
+        return "HTTP/1.1 500 Internal Server Error", 500
 
 #@app.route(rule="/board_down?no=<board_no>", methods=["DELETE"])
 #def unregist_board():
@@ -167,6 +164,18 @@ def support():
     except:
         return jsonify(exception.SEND_ERROR), 500
 
+@app.route(rule="/applying", methods=["GET"])
+def applying():
+    id = None
+    id = request.args.get("id", id)
+    args = {"id": id }
+
+    try:
+        response = handler.get_request(util.APPLYING, request_data=None, args=args)
+        return jsonify(response), 200
+    except:
+        return jsonify(exception.SEND_ERROR), 500
+
 
 @app.route(rule="/supporters", methods=["GET"])
 def get_supports():
@@ -174,15 +183,11 @@ def get_supports():
 
     :return:
     '''
-    no = None
     id = None
 
-    no = request.args.get("no", no)
-    id = request.args.get("od", id)
+    id = request.args.get("id", id)
 
-    args = {
-        "no": no,
-        "id": id }
+    args = {"id": id }
     try:
         response = handler.get_request(util.GET_SUPPORTERS, request_data=None, args=args)
         return jsonify(response), 200

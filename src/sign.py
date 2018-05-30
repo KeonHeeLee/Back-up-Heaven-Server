@@ -1,3 +1,5 @@
+#-*-coding: utf-8-*-
+
 import util
 import exception
 
@@ -28,8 +30,8 @@ class sign:
             local = util.get_local_id(cursor=cursor, local_name=local_main)
             job = util.get_job_id(cursor=cursor, job_name=job_name)
 
-            query = "insert into member values(\'%s\', \'%s\', \'%s\', %d, \'%s\', \'%s\', %d, \'%s\', %d)" \
-                    %((id, pwd, name, gender, birthday, phone, local, local_sub, job))
+            query = "insert into member values(\'%s\', \'%s\', \'%s\', %d, \'%s\', \'%s\', %d, \'%s\', %d);" \
+                    %(id, pwd, name, gender, birthday, phone, local, local_sub, job)
             cursor.execute(query)
             conn.commit()
 

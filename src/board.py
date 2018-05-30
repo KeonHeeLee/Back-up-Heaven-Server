@@ -113,13 +113,13 @@ class board:
         conn = util.open_db()
 
         with conn.cursor() as cursor:
-            query = "select * from board where no=%d" %(board_no)
+            query = "select * from board where no=%d;" %(board_no)
             cursor.execute(query)
             rows = cursor.fetchall()
 
             for row in rows:
                 job = None
-                job_query = "select name from data_code where id=%d" %(row[7])
+                job_query = "select name from data_code where id=%d;" %(row[7])
                 cursor.execute(job_query)
                 x = cursor.fetchall()
                 for i in x :
@@ -162,23 +162,23 @@ class board:
         local_name = request["local"]
         local_sub = request["local_sub"]
         id = request["id"]
+        phone = request["phone"]
 
         with conn.cursor() as cursor:
-            job_query = "select id from data_code where name=%s" %(job_name)
+            job_query = "select id from data_code where name=\'%s\' and type='직종';" %(job_name)
             cursor.execute(job_query)
             x = cursor.fetchall()
-            for i in x:
-                job = i[0]
+            job = x[0][0]
 
-            local_query = "select local_id from local where local_name=%s" % (local_name)
+            local_query = "select local_id from local where local_name=\'%s\';" %(local_name)
+            print(local_name + "=error3")
             cursor.execute(local_query)
             x = cursor.fetchall()
-            for i in x:
-                local = i[0]
+            local = x[0][0]
 
-            query = "insert into board values(null, %s, %s, %s, %s, %d, %s, %d, %s, %s, %d, %s, %s" %(
+            query = "insert into board values(null, \'%s\', \'%s\', \'%s\', \'%s\', %d, \'%s\', %d, \'%s\', \'%s\', %d, \'%s\', \'%s\', \'%s\');" %(
                 title, storename, start_time, end_time, urgency, job_condition, job,
-                favorable_condition, detail, local, local_sub, id)
+                favorable_condition, detail, local, local_sub, id, phone)
             cursor.execute(query)
             conn.commit()
 

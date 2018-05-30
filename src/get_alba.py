@@ -13,52 +13,78 @@ class get_alba:
 
         conn = util.open_db()
         with conn.cursor() as cursor:
-            query = "insert into getAlba values(%s, %d)"
-            cursor.execute(query, (id, no))
+            query = "insert into getAlba values(\'%s\', %d);" %(id,no)
+            cursor.execute(query)
             conn.commit()
 
         util.close_db(conn=conn)
         return self.GET_ALBA_SUCCESS
 
     def supporter_list(self, args):
-        supporter_list = {}
+        list = []
         id = args["id"]
-        no = args["no"]
 
         conn = util.open_db()
         with conn.cursor() as cursor:
-            board_list_query = "select no from board where id=%s;"
-            cursor.execute(board_list_query, id)
+            query = "select no, storename from board where id=\'%s\';" %(id)
+            cursor.execute(query)
             rows = cursor.fetchall()
 
             for row in rows:
-                board_no = str(row[0])
-                supporter_list.update({
-                    board_no: self.get_supporter_info(cursor=cursor, no=row[0])
+                id_query = "select id from getAlba where no=%d;" %(row[0])
+                cursor.execute(id_query)
+                x = cursor.fetchall()
+
+                for i in x:
+                    info_query = "select gender, local, local_sub, phone from member where id=\'%s\';" %(i[0])
+                    cursor.execute(info_query)
+                    y = cursor.fetchall()
+
+                    upper = util.get_local_name(cursor, util.get_upper_local(cursor, y[0][1]))
+                    lower = util.get_local_name(cursor, y[0][1])
+                    local = upper + " " + lower + " " + y[0][2]
+
+                    list.append({
+                        "no": row[0],
+                        "storename": x[1],
+                        "id": i[0],
+                        "gender": util.get_gender_name(cursor, y[0][0]),
+                        "local": local,
+                        "phone": y[0][3]
+                    })
+
+        response = {"applyer":list}
+        util.close_db(conn=conn)
+        return response
+
+    def applying(self, args):
+        id = args["id"]
+        list = []
+        conn = util.open_db()
+
+        with conn.cursor() as cursor:
+            applying_alba = "select no from getAlba where id=\'%s\';" %(id)
+            cursor.execute(applying_alba)
+            rows = cursor.fetchall()
+
+            for row in rows:
+                #                 0      1              2             3         4         5
+                query = "select no, storename, start_time, end_time, local, local_sub from board where row=%d;" %(row[0])
+                cursor.execute(query)
+                x = cursor.fetchall()
+
+                upper = util.get_local_name(cursor, util.get_upper_local(cursor, x[0][4]))
+                lower = util.get_local_name(cursor, x[0][4])
+                local = upper + " " + lower + " " + x[0][5]
+
+                list.append({
+                    "no": x[0][0],
+                    "storename": x[0][1],
+                    "start_time": x[0][2],
+                    "end_time": x[0][3],
+                    "local": local
                 })
 
-        util.close_db(conn=conn)
-        return supporter_list
-
-
-    def get_supporter_info(self, cursor, no):
-        get_id_query = "select id from getAlba where no=%d;" %(no)
-        cursor.execute(get_id_query)
-        rows = cursor.fetchall()
-        supporter_list_in_board = {}
-
-        for row in rows:
-            query = "select birthday, gender from member where id=%s"
-            cursor.execute(query, row[0])
-            x = cursor.fetchall()
-            gender_name = util.get_gender_name(cursor, x[0][1])
-            supporter_list_in_board.update({
-                row[0] : {
-                    "birthday": x[0][0],
-                    "gender": gender_name
-                }
-            })
-            return supporter_list_in_board
-
-    def get_support_storename(self, cursor, id):
-        query = "select no"
+        util.close_db(conn)
+        response = {"applying": list}
+        return response
