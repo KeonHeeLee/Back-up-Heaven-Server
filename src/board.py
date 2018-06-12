@@ -171,7 +171,6 @@ class board:
             job = x[0][0]
 
             local_query = "select local_id from local where local_name=\'%s\';" %(local_name)
-            print(local_name + "=error3")
             cursor.execute(local_query)
             x = cursor.fetchall()
             local = x[0][0]

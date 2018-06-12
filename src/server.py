@@ -1,10 +1,14 @@
 #-*- coding utf-8-*-
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug import secure_filename
 from handler import handler
 import util, exception
 
+UPLOAD_FOLDER = 'upload'
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 handler = handler()
 
@@ -170,6 +174,8 @@ def applying():
     id = request.args.get("id", id)
     args = {"id": id }
 
+    print("\'" + id + "\'")
+
     try:
         response = handler.get_request(util.APPLYING, request_data=None, args=args)
         return jsonify(response), 200
@@ -184,7 +190,6 @@ def get_supports():
     :return:
     '''
     id = None
-
     id = request.args.get("id", id)
 
     args = {"id": id }
@@ -192,7 +197,7 @@ def get_supports():
         response = handler.get_request(util.GET_SUPPORTERS, request_data=None, args=args)
         return jsonify(response), 200
     except:
-        return jsonify(exception.SEND_ERROR)
+        return jsonify(exception.SEND_ERROR), 500
 
 @app.route(rule="/locallist", methods=["GET"])
 def get_local_list():
@@ -225,6 +230,32 @@ def get_job_list():
         return jsonify(response), 200
     except:
         return jsonify(exception.SEND_ERROR), 500
+
+@app.route(rule="/upload", methods=["POST"])
+def recv_image():
+    no = None
+    no = request.args.get("no", no)
+    try:
+        file = request.files['image']
+        file.save(secure_filename("image_"+no))
+        return "HTTP/1.1 200 OK", 200
+    except:
+        return jsonify(exception.SEND_ERROR), 500
+
+@app.route(rule="/image/<filename>")
+def get_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename=filename)
+
+@app.route(rule="/recruitment", methods=["GET"])
+def set_recruitment():
+    no = None
+    no = request.args.get("no", no)
+    try:
+        handler.get_request(util.RECRUITMENT, request_data=None, args=no)
+        return "HTTP/1.1 200 OK", 200
+    except:
+        return jsonify(exception.SEND_ERROR), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)

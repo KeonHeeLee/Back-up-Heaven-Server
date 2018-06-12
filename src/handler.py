@@ -26,6 +26,7 @@ class handler:
         elif type == util.GET_SUPPORTERS:   response = self.get_alba.supporter_list(args=args)
         elif type == util.LOCAL_LIST:       response = self.datalist.get_datalist(args=args)
         elif type == util.JOB_LIST:         response = self.datalist.get_job_list()
+        elif type == util.RECRUITMENT:      self.get_alba.recruitment(args=args)
 
         else:
             return jsonify(util.ERROR), 404

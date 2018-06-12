@@ -13,6 +13,8 @@ LOCAL_LIST      = "LOCAL_LIST"
 JOB_LIST        = "JOB_LIST"
 ERROR           = "ERROR"
 APPLYING        = "APPLYING"
+UPLOAD          = "UPLOAD"
+RECRUITMENT     = "RECRUITMENT"
 
 GET_LOCAL       = 100
 GET_JOB         = 101
@@ -78,3 +80,10 @@ def get_job_id(cursor, job_name):
     x = cursor.fetchall()
 
     return x[0][0]
+
+def get_num(cursor, title, id):
+    query = "select no from board where title=\'%s\' and id=\'%s\';"%(title, id)
+    cursor.execute(query)
+    x = cursor.fetchall()
+
+    return int(x[0][0])
